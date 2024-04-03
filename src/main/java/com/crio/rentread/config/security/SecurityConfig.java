@@ -3,6 +3,7 @@ package com.crio.rentread.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,7 +37,9 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(configurer -> configurer
             .requestMatchers("/api/login", "/api/register")
             .permitAll()
-            .requestMatchers("/api/books", "/api/books/{id}").hasAuthority(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.POST,"/api/books").hasAuthority(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.PUT,"/api/books/{id}").hasAuthority(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.DELETE,"/api/books/{id}").hasAuthority(Role.ADMIN.name())
             .anyRequest()
             .authenticated()
         );

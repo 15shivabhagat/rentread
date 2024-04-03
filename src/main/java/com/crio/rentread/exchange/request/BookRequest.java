@@ -11,11 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BookRequest {
-    @NotNull
     private String title;
-    @NotNull
     private String author;
-    @NotNull
     private String genre;
     private Boolean available = true;
 }

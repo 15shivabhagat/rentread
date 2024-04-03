@@ -15,4 +15,10 @@ public class GlobalException {
         Response response = new Response(e.getMessage(), HttpStatus.CONFLICT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<Response> bookNotFoundException(BookNotFoundException e) {
+        Response response = new Response(e.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 }
