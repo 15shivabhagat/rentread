@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.crio.rentread.entity.User;
 import com.crio.rentread.entity.enums.Role;
 import com.crio.rentread.exception.UserAlreadyExistException;
+import com.crio.rentread.exception.UserNotFoundException;
 import com.crio.rentread.exchange.request.LoginUserRequest;
 import com.crio.rentread.exchange.request.RegisterUserRequest;
+import com.crio.rentread.exchange.response.RentBookResponse;
 import com.crio.rentread.exchange.response.Response;
 import com.crio.rentread.repository.UserRepository;
 import com.crio.rentread.service.AuthService;
@@ -30,29 +32,43 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Response registerUser(RegisterUserRequest request) throws UserAlreadyExistException {
-        if(userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistException("User is already register");
         }
-        if(request.getRole() == null) {
+        if (request.getRole() == null) {
             request.setRole(Role.USER);
         }
-        
+
         User user = User.builder()
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .role(request.getRole())
-                        .build();
-        
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
+
         userRepository.save(user);
         return new Response("User Registered Successfully!", HttpStatus.CREATED);
     }
 
     @Override
     public Response login(LoginUserRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         return new Response("User Logged in successfully!", HttpStatus.OK);
     }
-    
+
+    @Override
+    public RentBookResponse getUserById(Long id) throws UserNotFoundException {
+        User user = userRepository.findUserWithRentedBooksById(id)
+                .orElseThrow(() -> new UserNotFoundException("User is not present"));
+        return RentBookResponse.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .books(user.getBooks())
+                .role(user.getRole())
+                .build();
+    }
+
 }

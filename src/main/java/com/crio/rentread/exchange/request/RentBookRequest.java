@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookRequest {
-    private String title;
-    private String author;
-    private String genre;
-    private Boolean available = true;
+public class RentBookRequest {
+    private Long userId;
 }

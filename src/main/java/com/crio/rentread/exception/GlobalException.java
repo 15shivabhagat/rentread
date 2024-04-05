@@ -9,7 +9,7 @@ import com.crio.rentread.exchange.response.Response;
 
 @RestControllerAdvice
 public class GlobalException {
-    
+
     @ExceptionHandler(UserAlreadyExistException.class)
     public ResponseEntity<Response> userAlreadyExistException(UserAlreadyExistException e) {
         Response response = new Response(e.getMessage(), HttpStatus.CONFLICT);
@@ -20,5 +20,17 @@ public class GlobalException {
     public ResponseEntity<Response> bookNotFoundException(BookNotFoundException e) {
         Response response = new Response(e.getMessage(), HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Response> userNotFoundException(UserNotFoundException e) {
+        Response response = new Response(e.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(NotAbleToRentException.class)
+    public ResponseEntity<Response> notAbleToRentException(NotAbleToRentException e) {
+        Response response = new Response(e.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

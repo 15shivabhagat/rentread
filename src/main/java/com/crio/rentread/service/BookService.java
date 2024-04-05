@@ -1,11 +1,12 @@
 package com.crio.rentread.service;
 
+import java.util.List;
+
 import com.crio.rentread.entity.BookStore;
 import com.crio.rentread.exception.BookNotFoundException;
 import com.crio.rentread.exchange.request.BookRequest;
 import com.crio.rentread.exchange.response.Response;
 
-import jakarta.validation.Valid;
 
 public interface BookService {
 
@@ -14,5 +15,9 @@ public interface BookService {
     BookStore updateBook(Long id, BookRequest request) throws BookNotFoundException;
 
     Response removeBook(Long id) throws BookNotFoundException;
+
+    List<BookStore> getAllBooks();
+
+    BookStore getBookById(Long id) throws BookNotFoundException;
     
 }

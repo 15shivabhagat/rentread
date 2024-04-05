@@ -1,5 +1,6 @@
 package com.crio.rentread.service.implementation;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,30 +23,30 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookStore createBook(@Valid BookRequest request) {
-        if(bookStoreRepository.existsByTitle(request.getTitle())) {
+        if (bookStoreRepository.existsByTitle(request.getTitle())) {
             return null;
         }
 
         BookStore newBook = BookStore.builder()
-                                    .title(request.getTitle())
-                                    .author(request.getAuthor())
-                                    .genre(request.getGenre())
-                                    .available(request.getAvailable())
-                                    .build();
+                .title(request.getTitle())
+                .author(request.getAuthor())
+                .genre(request.getGenre())
+                .available(request.getAvailable())
+                .build();
         BookStore book = bookStoreRepository.save(newBook);
         return book;
     }
 
     @Override
     public BookStore updateBook(Long id, BookRequest request) throws BookNotFoundException {
-        BookStore book = bookStoreRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not present"));
-        if(request.getTitle() != null) {
+        BookStore book = getBookById(id);
+        if (request.getTitle() != null) {
             book.setTitle(request.getTitle());
         }
-        if(request.getAuthor() != null) {
+        if (request.getAuthor() != null) {
             book.setAuthor(request.getAuthor());
         }
-        if(request.getGenre() != null) {
+        if (request.getGenre() != null) {
             book.setGenre(request.getGenre());
         }
         return bookStoreRepository.save(book);
@@ -53,8 +54,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Response removeBook(Long id) throws BookNotFoundException {
-        BookStore book = bookStoreRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book is not present"));
+        BookStore book = getBookById(id);
         bookStoreRepository.delete(book);
         return new Response("Book removed successfully!", HttpStatus.OK);
+    }
+
+    @Override
+    public List<BookStore> getAllBooks() {
+        return bookStoreRepository.findAll();
+    }
+
+    @Override
+    public BookStore getBookById(Long id) throws BookNotFoundException {
+        return bookStoreRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not present"));
     }
 }

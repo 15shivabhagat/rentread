@@ -11,4 +11,5 @@ import com.crio.rentread.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Boolean existsByEmail(String email);
+    Optional<User> findUserWithRentedBooksById(Long id);
 }

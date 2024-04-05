@@ -1,5 +1,6 @@
 package com.crio.rentread.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,8 +30,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;    
 
     @Column(name = "first_name")
     private  String firstName;
@@ -45,6 +47,16 @@ public class User implements UserDetails {
 
     @Column(name = "role")
     private Role role;
+
+    @OneToMany(
+        mappedBy = "user"
+    )
+    private List<BookStore> books = new ArrayList<>();
+
+    // public void addBooks(BookStore book) {
+    //     book.setUser(this);
+    //     books.add(book);
+    // }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -23,26 +23,25 @@ import com.crio.rentread.service.UserService;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    
+
     @Autowired
     private UserService userService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         // disable csrf
         httpSecurity.csrf(csrf -> csrf.disable());
 
         httpSecurity.authenticationProvider(authenticationProvider());
 
         httpSecurity.authorizeHttpRequests(configurer -> configurer
-            .requestMatchers("/api/login", "/api/register")
-            .permitAll()
-            .requestMatchers(HttpMethod.POST,"/api/books").hasAuthority(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.PUT,"/api/books/{id}").hasAuthority(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.DELETE,"/api/books/{id}").hasAuthority(Role.ADMIN.name())
-            .anyRequest()
-            .authenticated()
-        );
+                .requestMatchers("/api/login", "/api/register")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.PUT, "/api/books/{id}").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.DELETE, "/api/books/{id}").hasAuthority(Role.ADMIN.name())
+                .anyRequest()
+                .authenticated());
 
         // Explicitly tell Spring Security that we are using Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
@@ -55,7 +54,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -63,7 +62,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
